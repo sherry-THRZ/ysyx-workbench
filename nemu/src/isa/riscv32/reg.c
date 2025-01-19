@@ -27,8 +27,8 @@ const char *regs[] = {
 void isa_reg_display() {
   int regs_size = MUXDEF(CONFIG_RVE, 16, 32);
   printf("The regs values are:\n");
-  for (int i = 0; i < regs_size; i++){
-    printf("%s = %d     %#x\n", regs[i], cpu.gpr[i], cpu.gpr[i]); 
+  for (int i = 0; i < regs_size; i = i + 2){
+    printf("%s = %d\t%#x\t\t%s = %d\t%#x\n", regs[i], cpu.gpr[i], cpu.gpr[i], regs[i+1], cpu.gpr[i+1], cpu.gpr[i+1]); 
  } 
 }
 
