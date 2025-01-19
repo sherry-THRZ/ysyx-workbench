@@ -66,6 +66,15 @@ static int cmd_si(char *args){
   return 0; 
 } 
 
+static int cmd_info(char *args){
+  //打印寄存器状态
+  if (*args == 'r'){
+    isa_reg_display();
+  }
+
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -78,7 +87,8 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-  [3]={"si", "Single-step execution", cmd_si}
+  [3]={"si", "Single-step execution", cmd_si},
+  [4]={"info", "Print out program state", cmd_info}
 };
 
 #define NR_CMD ARRLEN(cmd_table)

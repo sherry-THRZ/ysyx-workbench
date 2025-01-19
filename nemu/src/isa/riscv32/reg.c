@@ -28,7 +28,7 @@ void isa_reg_display() {
   int regs_size = MUXDEF(CONFIG_RVE, 16, 32);
   printf("The regs values are:\n");
   for (int i = 0; i < regs_size; i++){
-    printf("%s = %d\n", regs[i], cpu.gpr[i]); 
+    printf("%s = %d     %#x\n", regs[i], cpu.gpr[i], cpu.gpr[i]); 
  } 
 }
 
