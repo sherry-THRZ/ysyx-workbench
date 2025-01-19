@@ -61,7 +61,7 @@ static int cmd_si(char *args){
 
   //根据step来执行
   cpu_exec(step);
-  printf("Step Execute = %s\n", args);
+  printf("Step Execute = %d\n", step);
 
   return 0; 
 } 
