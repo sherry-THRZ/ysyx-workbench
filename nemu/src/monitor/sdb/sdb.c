@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <../include/memory/paddr.h>
 
 static int is_batch_mode = false;
 
@@ -75,6 +76,24 @@ static int cmd_info(char *args){
   return 0;
 }
 
+static int cmd_x(char *args){
+  //将args进一步分别成数字和表达式
+  char *num_tmp = strtok(args, " ");
+ //剩下的args就是表达式
+ 
+  int num = atoi(num_tmp);
+  
+  //expr暂时只能是十六进制数
+  paddr_t expr_to_addr = strtoul(args, NULL, 16);
+
+  for (int i = 0; i < num; i++){
+    printf("%x: %x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
+    expr_to_addr += 4;
+  }
+
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -88,7 +107,8 @@ static struct {
 
   /* TODO: Add more commands */
   [3]={"si", "Single-step execution", cmd_si},
-  [4]={"info", "Print out program state", cmd_info}
+  [4]={"info", "Print out program state", cmd_info},
+  [5]={"x", "scan memory", cmd_x}
 };
 
 #define NR_CMD ARRLEN(cmd_table)
