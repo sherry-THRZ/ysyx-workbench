@@ -17,7 +17,8 @@
 #define __ISA_X86_H__
 
 #include <common.h>
-
+//#include <cstdint>
+#include <stdint.h>
 
 /* TODO: Re-organize the `CPU_state' structure to match the register
  * encoding scheme in i386 instruction format. For example, if we
@@ -27,15 +28,24 @@
  */
 
 typedef struct {
-  struct {
-    uint32_t _32;
-    uint16_t _16;
-    uint8_t _8[2];
-  } gpr[8];
-
-  /* Do NOT change the order of the GPRs' definitions. */
-  uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
-
+//  struct {
+//    uint32_t _32;
+//    uint16_t _16;
+//    uint8_t _8[2];
+//  } gpr[8];
+   union{
+        struct {
+          union{
+    	     uint32_t _32;
+    	     uint16_t _16;
+    	     uint8_t _8[2];
+          };
+        }gpr[8];
+      /* Do NOT change the order of the GPRs' definitions. */
+        struct{
+          uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
+        };
+   };
   vaddr_t pc;
 } x86_CPU_state;
 
