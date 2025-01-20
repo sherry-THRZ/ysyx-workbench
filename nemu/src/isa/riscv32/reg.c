@@ -23,7 +23,13 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+//打印寄存器，在sdb中会用到
 void isa_reg_display() {
+  int regs_size = MUXDEF(CONFIG_RVE, 16, 32);
+  printf("The regs values are:\n");
+  for (int i = 0; i < regs_size; i = i + 2){
+    printf("%-3s = %-20d\t%#-16x\t\t%-3s = %-20d\t%#-16x\n", regs[i], cpu.gpr[i], cpu.gpr[i], regs[i+1], cpu.gpr[i+1], cpu.gpr[i+1]); 
+ } 
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {

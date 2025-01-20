@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <../include/memory/paddr.h>
 
 static int is_batch_mode = false;
 
@@ -52,6 +53,47 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_si(char *args){
+  //如果没有给出N，args为NULL,执行单步执行，否则根据给出的N来执行
+  int step = 1;
+  if (args){
+   step = atoi(args); 
+  }
+
+  //根据step来执行
+  cpu_exec(step);
+  printf("Step Execute = %d\n", step);
+
+  return 0; 
+} 
+
+static int cmd_info(char *args){
+  //打印寄存器状态
+  if (*args == 'r'){
+    isa_reg_display();
+  }
+
+  return 0;
+}
+
+static int cmd_x(char *args){
+  //将args进一步分别成数字和表达式
+  char *num_tmp = strtok(args, " ");
+ //剩下的args就是表达式
+ 
+  int num = atoi(num_tmp);
+  
+  //expr暂时只能是十六进制数
+  char *addr_tmp = num_tmp + strlen(num_tmp) + 1; 
+  paddr_t expr_to_addr = strtoul(addr_tmp, NULL, 16);
+
+  for (int i = 0; i < num; i++){
+    printf("%#x: %#x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
+    }
+
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -64,7 +106,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-
+  [3]={"si", "Single-step execution", cmd_si},
+  [4]={"info", "Print out program state", cmd_info},
+  [5]={"x", "scan memory", cmd_x}
 };
 
 #define NR_CMD ARRLEN(cmd_table)
