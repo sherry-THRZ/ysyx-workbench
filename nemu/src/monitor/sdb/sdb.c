@@ -84,7 +84,8 @@ static int cmd_x(char *args){
   int num = atoi(num_tmp);
   
   //expr暂时只能是十六进制数
-  paddr_t expr_to_addr = strtoul(args, NULL, 16);
+  char *addr_tmp = num_tmp + strlen(num_tmp) + 1; 
+  paddr_t expr_to_addr = strtoul(addr_tmp, NULL, 16);
 
   for (int i = 0; i < num; i++){
     printf("%x: %x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
