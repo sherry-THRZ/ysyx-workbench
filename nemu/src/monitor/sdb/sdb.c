@@ -88,9 +88,8 @@ static int cmd_x(char *args){
   paddr_t expr_to_addr = strtoul(addr_tmp, NULL, 16);
 
   for (int i = 0; i < num; i++){
-    printf("%x: %x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
-    expr_to_addr += 4;
-  }
+    printf("%#x: %#x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
+    }
 
   return 0;
 }
