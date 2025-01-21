@@ -91,6 +91,11 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
+	//如果造成缓冲区溢出问题
+	if (pmatch.rm_eo >= 32){
+		panic("The length of the regular expression is too long.");
+	}
+
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
