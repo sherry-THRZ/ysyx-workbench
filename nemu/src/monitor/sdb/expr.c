@@ -40,7 +40,7 @@ static struct rule {
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
   
-  [3]={"[1-9][0-9]+", TK_DEC},  //十进制数
+  [3]={"[1-9][0-9]?", TK_DEC},  //十进制数
   [4]={"\\-", TK_SUB},      //减法
   [5]={"\\*", TK_MUL},      //乘法
   [6]={"/", TK_DIV},        //除法
@@ -131,7 +131,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+ // TODO();
 
   return 0;
 }
