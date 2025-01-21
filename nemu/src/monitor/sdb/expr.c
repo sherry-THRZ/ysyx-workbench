@@ -19,6 +19,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
+#include <stdio.h>
 
 enum {
   TK_NOTYPE = 256, TK_EQ, TK_DEC, TK_SUB, TK_MUL, TK_DIV, TK_LColon, TK_RColon
@@ -101,9 +102,7 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-        	case TK_NOTYPE: break;
-
-
+        	case TK_NOTYPE: break; //遇到空格，直接跳过
                 default:
 			tokens[nr_token].type = rules[i].token_type;
 			strncpy(tokens[nr_token].str, substr_start, substr_len);
@@ -136,3 +135,13 @@ word_t expr(char *e, bool *success) {
 
   return 0;
 }
+
+//测试make_token代码
+//int main(void){
+//	char *e = NULL;
+//	printf("Please input an expression: ");
+//	scanf("%s", e);
+//	printf("You have input %s\n", e);
+//
+//	make_token(e);
+
