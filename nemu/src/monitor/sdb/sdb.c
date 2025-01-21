@@ -94,6 +94,13 @@ static int cmd_x(char *args){
   return 0;
 }
 
+static int cmd_p(char *args){
+  bool *success = NULL;
+  expr(args, success);
+
+  return 0;  
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -108,7 +115,8 @@ static struct {
   /* TODO: Add more commands */
   [3]={"si", "Single-step execution", cmd_si},
   [4]={"info", "Print out program state", cmd_info},
-  [5]={"x", "scan memory", cmd_x}
+  [5]={"x", "scan memory", cmd_x},
+  [6]={"p", "calculate the value of the expression", cmd_p}
 };
 
 #define NR_CMD ARRLEN(cmd_table)

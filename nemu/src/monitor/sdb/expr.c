@@ -136,12 +136,3 @@ word_t expr(char *e, bool *success) {
   return 0;
 }
 
-//测试make_token代码
-//int main(void){
-//	char *e = NULL;
-//	printf("Please input an expression: ");
-//	scanf("%s", e);
-//	printf("You have input %s\n", e);
-//
-//	make_token(e);
-
