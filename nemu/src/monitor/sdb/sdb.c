@@ -95,10 +95,10 @@ static int cmd_x(char *args){
 }
 
 static int cmd_p(char *args){
-  bool *success = NULL;
-  uint32_t value = expr(args, success);
+  bool success;
+  uint32_t value = expr(args, &success);
 
-  if (*success == false){
+  if (success == false){
 	  panic("Cannot not make token\n");
   }
   else{
