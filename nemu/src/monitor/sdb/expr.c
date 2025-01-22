@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ, TK_DEC, TK_SUB, TK_MUL, TK_DIV, TK_LColon, TK_RColon
+  TK_NOTYPE = 256, TK_EQ, TK_DEC 
 
   /* TODO: Add more token types */
 };
@@ -41,11 +41,11 @@ static struct rule {
   {"==", TK_EQ},        // equal
   
   [3]={"[1-9][0-9]?", TK_DEC},  //十进制数
-  [4]={"\\-", TK_SUB},      //减法
-  [5]={"\\*", TK_MUL},      //乘法
-  [6]={"/", TK_DIV},        //除法
-  [7]={"\\(", TK_LColon},
-  [8]={"\\)", TK_RColon} 
+  [4]={"\\-", '-'},      //减法
+  [5]={"\\*", '*'},      //乘法
+  [6]={"/", '/'},        //除法
+  [7]={"\\(", '('},
+  [8]={"\\)", ')'} 
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -128,6 +128,41 @@ static bool make_token(char *e) {
   return true;
 }
 
+//判断表达式中所有的括号是否匹配,即判断表达式是否合法
+static bool _check_parentheses(int p, int q){
+	if (p == q){ //表达式为'()',不合法
+		return false;
+	}
+	else{ //不会出现p>q的情况了
+		int left_num = 0; //左括号的数量
+		for (int i = p; i <= q; i++){
+			if (left_num == 0 && tokens[i].str[0] == ')'){
+				return false;
+			}
+			else if (tokens[i].str[0] == '('){
+				left_num++;
+			}
+			else if (tokens[i].str[0] == ')'){
+				left_num--;
+			}
+		}
+		if (left_num == 0){
+			return true;
+		}	
+		else{
+			return false;
+		}
+	}
+}
+
+static bool check_parentheses(int p, int q){
+	if (tokens[p].str[0] == '(' && tokens[q].str[0] == ')'){
+		return _check_parentheses(p+1, q-1);
+	}
+	else{ //两端不是括号，一定不合法
+		return false;
+	}
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -136,8 +171,8 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
- // TODO();
+//  TODO();
 
+  check_parentheses(0, nr_token-1);
   return 0;
 }
-
