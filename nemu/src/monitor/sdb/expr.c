@@ -164,6 +164,93 @@ static bool check_parentheses(int p, int q){
 	}
 }
 
+//判断优先级的函数
+//返回值越大代表优先级越高
+int priority(int x){
+	if ((tokens[x].type == '+') || (tokens[x].type == '-')){
+		return 1;
+	}	
+	else if ((tokens[x].type == '*') || (tokens[x].type == '/')){
+		return 2;
+	}
+	else{
+		return 0;
+	}
+}
+
+//判断主运算符函数
+int find_mainop(int p, int q){
+	int mainop = -1;
+	int highest_priority = 0;
+	bool  in_colon = false; //运算符是否在括号李
+	for (int i = p; i <= q; i++){
+		if (!in_colon){
+			if (tokens[i].type == '('){
+				in_colon = true;
+			}
+			else if (priority(i) >= highest_priority){
+				highest_priority = priority(i);
+				mainop = i;
+			}
+		}
+		else{
+			if (tokens[i].type == ')'){
+				in_colon = false;
+			}
+		}
+	}
+	
+	return mainop;
+}
+
+uint32_t eval(int p, int q) {
+  if (p > q) {
+    /* Bad expression */
+    printf("Bad Expression: p > q\n");
+    //这里如何处理需要修改！
+    return -1;
+  }
+  else if (p == q) {
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+     uint32_t num = strtoul(tokens[p].str, NULL, 10);
+     return num;
+  }
+  else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1);
+  }
+  else {
+    //检查是否会出现不合法的表达式
+    if (_check_parentheses(p, q) == false){
+	    printf("Bad expression, the expression is illegal, it has unmatched parentheses!\n");
+	    return -1; //可能需要修改！
+    }
+    int op = find_mainop(p, q); //主运算符的下标
+    
+    if (priority(op) == 0){
+	    printf("Find the wrong operand: %s\n", tokens[op].str);
+	    return -1;
+    }
+
+    uint32_t val1 = eval(p, op - 1);
+    uint32_t val2 = eval(op + 1, q);
+
+    char op_type = tokens[op].type;
+    switch (op_type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': return val1 / val2;
+      default: assert(0);
+    }
+  }
+}
+
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -171,9 +258,6 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-//  TODO();
-
-  bool check = check_parentheses(0, nr_token-1);
-  printf("%d\n", check);
-  return 0;
+  *success = true;
+  return eval(0, nr_token-1);
 }

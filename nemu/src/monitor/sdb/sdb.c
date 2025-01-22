@@ -96,8 +96,19 @@ static int cmd_x(char *args){
 
 static int cmd_p(char *args){
   bool *success = NULL;
-  expr(args, success);
+  uint32_t value = expr(args, success);
 
+  if (*success == false){
+	  panic("Cannot not make token\n");
+  }
+  else{
+	  if (value == -1){
+		  panic("Somethine went wrong.\n"); //这个可以再改进
+	  }
+	  else{
+		  printf("The value of the expression is: %d\n", value);
+	  }
+  }
   return 0;  
 }
 
