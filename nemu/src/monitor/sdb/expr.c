@@ -173,6 +173,7 @@ word_t expr(char *e, bool *success) {
   /* TODO: Insert codes to evaluate the expression. */
 //  TODO();
 
-  check_parentheses(0, nr_token-1);
+  bool check = check_parentheses(0, nr_token-1);
+  printf("%d\n", check);
   return 0;
 }
