@@ -184,18 +184,30 @@ int find_mainop(int p, int q){
 	int lowest_priority = 2;
 	int in_colon = 0; //运算符是否在括号李
 	for (int i = p; i <= q; i++){
-		if (!in_colon){
-			if (tokens[i].type == '('){
-				in_colon++;
-			}
-			else if (priority(i) <= lowest_priority){
-				lowest_priority = priority(i);
-				mainop = i;
-			}
+//		if (!in_colon){
+//			if (tokens[i].type == '('){
+//				in_colon++;
+//			}
+//			else if (priority(i) <= lowest_priority){
+//				lowest_priority = priority(i);
+//				mainop = i;
+//			}
+//		}
+//		else{
+//			if (tokens[i].type == ')'){
+//				in_colon--;
+//			}
+//		}
+		if (tokens[i].type == '('){
+			in_colon++;
 		}
-		else{
-			if (tokens[i].type == ')'){
-				in_colon--;
+		else if (tokens[i].type == ')'){
+			in_colon--;
+		}
+		if (!in_colon){
+			if (priority(i) <= lowest_priority){
+				lowest_priority = priority(i);
+  				mainop = i;
 			}
 		}
 	}
