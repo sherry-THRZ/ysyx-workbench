@@ -130,7 +130,10 @@ static bool make_token(char *e) {
 
 //判断表达式中所有的括号是否匹配,即判断表达式是否合法
 static bool _check_parentheses(int p, int q){
-	if (p == q){ //表达式为'()',不合法
+	if (p == q){ //check_parentheses输入的形式是() 中一个数
+		if (tokens[p].type == TK_DEC){
+			return true;
+		}	
 		return false;
 	}
 	else{ //不会出现p>q的情况了
@@ -239,7 +242,7 @@ uint32_t eval(int p, int q) {
   else {
     //检查是否会出现不合法的表达式
     if (_check_parentheses(p, q) == false){
-	    printf("Bad expression, the expression is illegal, it has unmatched parentheses!\n");
+	    printf("Bad expression, the expression is illegal, it has unmatched parentheses or the thing in the parenthesis is wrong!\n");
 	    return -1; //可能需要修改！
     }
     int op = find_mainop(p, q); //主运算符的下标
