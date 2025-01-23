@@ -203,6 +203,15 @@ int find_mainop(int p, int q){
 	return mainop;
 }
 
+//过滤有除0的情况
+static bool check_zero(uint32_t val2){
+	if (val2 == 0){
+		panic("Error: divide zero\n");
+	}
+
+	return true;
+}
+
 uint32_t eval(int p, int q) {
   if (p > q) {
     /* Bad expression */
@@ -245,7 +254,9 @@ uint32_t eval(int p, int q) {
       case '+': return val1 + val2;
       case '-': return val1 - val2;
       case '*': return val1 * val2;
-      case '/': return val1 / val2;
+      case '/': 
+	       check_zero(val2);
+	       return val1 / val2;
       default: assert(0);
     }
   }
