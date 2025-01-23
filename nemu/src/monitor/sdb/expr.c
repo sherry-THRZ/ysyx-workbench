@@ -232,7 +232,7 @@ uint32_t eval(int p, int q) {
     }
     int op = find_mainop(p, q); //主运算符的下标
     
-    if (priority(op) == 0){
+    if (priority(op) == 2){
 	    printf("Find the wrong operand: %s\n", tokens[op].str);
 	    return -1;
     }
