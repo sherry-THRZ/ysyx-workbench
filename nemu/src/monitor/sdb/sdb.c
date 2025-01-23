@@ -106,7 +106,7 @@ static int cmd_p(char *args){
 		  panic("Something went wrong in fuction cmd_p, please look at former information.\n"); //这个可以再改进
 	  }
 	  else{
-		  printf("The value of the expression is: %u\n", value);
+		  printf("The value of the expression is: %d\n", value);
 	  }
   }
   return 0;  
