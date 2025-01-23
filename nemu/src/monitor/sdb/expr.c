@@ -168,28 +168,28 @@ static bool check_parentheses(int p, int q){
 //返回值越大代表优先级越高
 int priority(int x){
 	if ((tokens[x].type == '+') || (tokens[x].type == '-')){
-		return 1;
+		return 0;
 	}	
 	else if ((tokens[x].type == '*') || (tokens[x].type == '/')){
-		return 2;
+		return 1;
 	}
 	else{
-		return 0;
+		return 2;
 	}
 }
 
 //判断主运算符函数
 int find_mainop(int p, int q){
 	int mainop = -1;
-	int highest_priority = 0;
+	int lowest_priority = 2;
 	bool  in_colon = false; //运算符是否在括号李
 	for (int i = p; i <= q; i++){
 		if (!in_colon){
 			if (tokens[i].type == '('){
 				in_colon = true;
 			}
-			else if (priority(i) >= highest_priority){
-				highest_priority = priority(i);
+			else if (priority(i) <= lowest_priority){
+				lowest_priority = priority(i);
 				mainop = i;
 			}
 		}
