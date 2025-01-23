@@ -182,11 +182,11 @@ int priority(int x){
 int find_mainop(int p, int q){
 	int mainop = -1;
 	int lowest_priority = 2;
-	bool  in_colon = false; //运算符是否在括号李
+	int in_colon = 0; //运算符是否在括号李
 	for (int i = p; i <= q; i++){
 		if (!in_colon){
 			if (tokens[i].type == '('){
-				in_colon = true;
+				in_colon++;
 			}
 			else if (priority(i) <= lowest_priority){
 				lowest_priority = priority(i);
@@ -195,7 +195,7 @@ int find_mainop(int p, int q){
 		}
 		else{
 			if (tokens[i].type == ')'){
-				in_colon = false;
+				in_colon--;
 			}
 		}
 	}
