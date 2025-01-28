@@ -31,25 +31,45 @@ static char *code_format =
 "  return 0; "
 "}";
 
+static char *buf_start = NULL;
+static char *buf_end = buf+(sizeof(buf)/sizeof(buf[0]));
+
 // 选择一个0到n-1之间的随机数
 static int choose(int n) {
     return rand() % n;
 }
 
+// 随机生成空格
+//static void gen_space() {
+//  int size = choose(4);
+//  if (buf_start < buf_end) {
+//    int n_writes = snprintf(buf_start, buf_end-buf_start, "%*s", size, "");
+//    if (n_writes > 0) {
+//      buf_start += n_writes;
+//    }
+//  }
+//}
+
 // 生成一个随机数字并将其追加到buf中
 static void gen_num() {
-    int num = rand() % 100 + 1; // 生成1到100之间的随机数
-    char term[32];
-    snprintf(term, sizeof(term), "%d", num);
-    strcat(buf, term);
+  int num = choose(INT8_MAX);
+  if (buf_start < buf_end) {
+    int n_writes = snprintf(buf_start, buf_end-buf_start, "%d", num);
+    if (n_writes > 0) {
+      buf_start += n_writes;
+    }
+  }
+//  gen_space();
 }
 
 // 将字符ch追加到buf中
-static void gen(char ch) {
-    char term[2];
-    term[0] = ch;
-    term[1] = '\0';
-    strcat(buf, term);
+static void gen(char c) {
+  int n_writes = snprintf(buf_start, buf_end-buf_start, "%c", c);
+  if (buf_start < buf_end) {
+    if (n_writes > 0) {
+      buf_start += n_writes;
+    }
+  }
 }
 
 // 生成一个随机运算符并将其追加到buf中
@@ -98,7 +118,8 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
-    buf[0] = '\0';
+    buf_start = buf;
+
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
@@ -108,7 +129,7 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc -Wno-overflow -Wdiv-by-zero -Werror /tmp/.code.c -o /tmp/.expr");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
