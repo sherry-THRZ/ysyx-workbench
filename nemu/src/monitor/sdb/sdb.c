@@ -233,7 +233,7 @@ void init_sdb() {
   init_regex();
 
   //测试表达式求值
- // test_expr();
+  test_expr();
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
