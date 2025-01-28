@@ -113,6 +113,7 @@ static bool make_token(char *e) {
 			   strncpy(tokens[nr_token].str, substr_start, substr_len-1); //最后一个u不读进去
 			   tokens[nr_token].str[substr_len-1] = 0;
 			   nr_token++;
+			   break;
                 default:
 			tokens[nr_token].type = rules[i].token_type;
 			strncpy(tokens[nr_token].str, substr_start, substr_len);
