@@ -52,9 +52,9 @@ static int choose(int n) {
 
 // 生成一个随机数字并将其追加到buf中
 static void gen_num() {
-  int num = choose(INT8_MAX);
+  uint32_t num = choose(101);
   if (buf_start < buf_end) {
-    int n_writes = snprintf(buf_start, buf_end-buf_start, "%d", num);
+    int n_writes = snprintf(buf_start, buf_end-buf_start, "%u", num);
     if (n_writes > 0) {
       buf_start += n_writes;
     }
@@ -96,6 +96,7 @@ void gen_rand_expr() {
     switch (choose(3)) {
         case 0:
             gen_num();
+	    gen('u'); //保证进行无符号运算
             break;
         case 1:
             gen('(');
