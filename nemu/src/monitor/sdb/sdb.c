@@ -198,11 +198,11 @@ void sdb_mainloop() {
 }
 
 void test_expr() {
-  FILE *fp = fopen("~Desktop/ysyx-workbench/nemu/tools/gen-expr/input", "r");
+  FILE *fp = fopen("~/Desktop/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   if (fp == NULL) perror("test_expr error");
 
   char *e = NULL;
-  word_t correct_res;
+  uint32_t correct_res;
   size_t len = 0;
   ssize_t read;
   bool success = false;
