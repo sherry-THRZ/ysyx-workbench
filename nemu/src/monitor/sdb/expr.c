@@ -47,7 +47,7 @@ static struct rule {
   [7]={"\\)", ')'}, 
   [8]={"0[xX][0-9A-Fa-f]+", TK_HEX},
   [9]={"[0-9]+u?", TK_DEC},  //十进制数
-  [10]={"\\$(0|ra|sp|gp|tp|t[0-6]|a[0-7]|s[0-11])", TK_REG},
+  [10]={"\\$($0|ra|sp|gp|tp|t[0-6]|a[0-7]|s[0-11])", TK_REG},
 };
 
 #define NR_REGEX ARRLEN(rules)
