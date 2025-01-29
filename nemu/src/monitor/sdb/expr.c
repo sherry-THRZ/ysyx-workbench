@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ, TK_DEC, TK_HEX, TK_REG 
+  TK_NOTYPE = 256, TK_DEC, TK_HEX, TK_REG, TK_EQ, TK_NEQ, TK_AND,  
 
   /* TODO: Add more token types */
 };
@@ -48,6 +48,9 @@ static struct rule {
   [8]={"0[xX][0-9A-Fa-f]+", TK_HEX},
   [9]={"[0-9]+u?", TK_DEC},  //十进制数
   [10]={"\\$(\\$0|ra|sp|gp|tp|t[0-6]|a[0-7]|s[0-9]+)", TK_REG},
+  [11]={"==", TK_EQ},
+  [12]={"!=", TK_NEQ},
+  [13]={"&&", TK_AND}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -191,13 +194,19 @@ static bool check_parentheses(int p, int q){
 //返回值越大代表优先级越高
 int priority(int x){
 	if ((tokens[x].type == '+') || (tokens[x].type == '-')){
-		return 0;
+		return 3;
 	}	
 	else if ((tokens[x].type == '*') || (tokens[x].type == '/')){
+		return 4;
+	}
+	else if ((tokens[x].type == TK_EQ) || (tokens[x].type == TK_NEQ)){
+		return 2;
+	}
+	else if (tokens[x].type == TK_AND){
 		return 1;
 	}
 	else{
-		return 2;
+		return 0;
 	}
 }
 
@@ -282,12 +291,15 @@ uint32_t eval(int p, int q) {
     uint32_t val1 = eval(p, op - 1);
     uint32_t val2 = eval(op + 1, q);
 
-    char op_type = tokens[op].type;
+    int op_type = tokens[op].type;
     switch (op_type) {
       case '+': return val1 + val2;
       case '-': return val1 - val2;
       case '*': return val1 * val2;
       case '/': return val1 / val2;
+      case TK_EQ: return val1 == val2;
+      case TK_NEQ: return val1 != val2;
+      case TK_AND: return val1 && val2; 
       default: assert(0);
     }
   }
