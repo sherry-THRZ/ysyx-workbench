@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ, TK_DEC 
+  TK_NOTYPE = 256, TK_EQ, TK_DEC, TK_HEX 
 
   /* TODO: Add more token types */
 };
@@ -45,7 +45,8 @@ static struct rule {
   [5]={"\\*", '*'},      //乘法
   [6]={"/", '/'},        //除法
   [7]={"\\(", '('},
-  [8]={"\\)", ')'} 
+  [8]={"\\)", ')'}, 
+  [9]={"0x[0-9A-Fa-f]+", TK_HEX}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -114,6 +115,11 @@ static bool make_token(char *e) {
 			   if (tokens[nr_token].str[substr_len-1] == 'u'){ //如果使用字面量后缀
 				   tokens[nr_token].str[substr_len-1] = 0;
 			   }
+			   nr_token++;
+			   break;
+		case TK_HEX:
+			   tokens[nr_token].type = rules[i].token_type;
+			   strncpy(tokens[nr_token].str, substr_start+2, substr_len-2); //0x不读入
 			   nr_token++;
 			   break;
                 default:
@@ -224,7 +230,14 @@ uint32_t eval(int p, int q) {
      * For now this token should be a number.
      * Return the value of the number.
      */
-     uint32_t num = strtoul(tokens[p].str, NULL, 10);
+    uint32_t num;
+
+    if (tokens[p].type == TK_HEX){
+	num = strtoul(tokens[p].str, NULL, 16);
+    }
+    else {
+        num = strtoul(tokens[p].str, NULL, 10);
+    }
      return num;
   }
   else if (check_parentheses(p, q) == true) {
