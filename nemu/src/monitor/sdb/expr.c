@@ -213,7 +213,7 @@ int priority(int x){
 //判断主运算符函数
 int find_mainop(int p, int q){
 	int mainop = -1;
-	int lowest_priority = 2;
+	int lowest_priority = 4;
 	int in_colon = 0; //运算符是否在括号李
 	for (int i = p; i <= q; i++){
 	if (tokens[i].type == '('){
