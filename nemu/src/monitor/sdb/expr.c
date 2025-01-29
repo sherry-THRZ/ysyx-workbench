@@ -190,22 +190,22 @@ static bool check_parentheses(int p, int q){
 }
 
 //判断优先级的函数
-//返回值越大代表优先级越高
+//返回值越大代表优先级越高,不过，数值最大的是非运算符
 int priority(int x){
 	if ((tokens[x].type == '+') || (tokens[x].type == '-')){
-		return 3;
+		return 2;
 	}	
 	else if ((tokens[x].type == '*') || (tokens[x].type == '/')){
-		return 4;
+		return 3;
 	}
 	else if ((tokens[x].type == TK_EQ) || (tokens[x].type == TK_NEQ)){
-		return 2;
-	}
-	else if (tokens[x].type == TK_AND){
 		return 1;
 	}
-	else{
+	else if (tokens[x].type == TK_AND){
 		return 0;
+	}
+	else{
+		return 4;
 	}
 }
 
@@ -282,7 +282,7 @@ uint32_t eval(int p, int q) {
     }
     int op = find_mainop(p, q); //主运算符的下标
     
-    if (priority(op) == 2){
+    if (priority(op) == 4){
 	    printf("Find the wrong operand: tokens[%d].str =  %s\n", op, tokens[op].str);
 	    return -1;
     }
