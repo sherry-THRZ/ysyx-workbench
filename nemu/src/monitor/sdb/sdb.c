@@ -94,6 +94,24 @@ static int cmd_x(char *args){
   return 0;
 }
 
+static int cmd_p(char *args){
+  bool success;
+  uint32_t value = expr(args, &success);
+
+  if (success == false){
+	  panic("Cannot not make token\n");
+  }
+  else{
+	  if (value == -1){
+		  panic("Something went wrong in fuction cmd_p, please look at former information.\n"); //这个可以再改进
+	  }
+	  else{
+		  printf("The value of the expression is: %u\n", value);
+	  }
+  }
+  return 0;  
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -108,7 +126,8 @@ static struct {
   /* TODO: Add more commands */
   [3]={"si", "Single-step execution", cmd_si},
   [4]={"info", "Print out program state", cmd_info},
-  [5]={"x", "scan memory", cmd_x}
+  [5]={"x", "scan memory", cmd_x},
+  [6]={"p", "calculate the value of the expression", cmd_p}
 };
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -178,9 +197,43 @@ void sdb_mainloop() {
   }
 }
 
+void test_expr(){
+  FILE *fp = fopen("/home/sherry/Desktop/ysyx-workbench/nemu/tools/gen-expr/input", "r");
+  if (fp == NULL) perror("test_expr error");
+
+  char *e = NULL;
+  uint32_t correct_res;
+  size_t len = 0;
+  ssize_t read;
+  bool success = false;
+
+  while (true) {
+    if(fscanf(fp, "%u ", &correct_res) == -1) break;
+    read = getline(&e, &len, fp);
+    e[read-1] = '\0';
+
+    word_t res = expr(e, &success);
+
+    assert(success);
+    if (res != correct_res) {
+      puts(e);
+      printf("expected: %u, got: %u\n", correct_res, res);
+      assert(0);
+    }
+  }
+
+  fclose(fp);
+  if (e) free(e);
+
+  Log("expr test pass");
+}
+
 void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
+
+  //测试表达式求值
+  test_expr();
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
