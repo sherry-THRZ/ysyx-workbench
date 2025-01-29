@@ -48,9 +48,8 @@ static struct rule {
   [8]={"0[xX][0-9A-Fa-f]+", TK_HEX},
   [9]={"[0-9]+u?", TK_DEC},  //十进制数
   [10]={"\\$(\\$0|ra|sp|gp|tp|t[0-6]|a[0-7]|s[0-9]+)", TK_REG},
-  [11]={"==", TK_EQ},
-  [12]={"!=", TK_NEQ},
-  [13]={"&&", TK_AND}
+  [11]={"!=", TK_NEQ},
+  [12]={"&&", TK_AND}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -154,7 +153,7 @@ static bool make_token(char *e) {
 //判断表达式中所有的括号是否匹配,即判断表达式是否合法
 static bool _check_parentheses(int p, int q){
 	if (p == q){ //check_parentheses输入的形式是() 中一个数
-		if (tokens[p].type == TK_DEC){
+		if (tokens[p].type == TK_DEC || tokens[p].type == TK_HEX || tokens[p].type == TK_REG){
 			return true;
 		}	
 		return false;
