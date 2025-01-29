@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 enum {
-  TK_NOTYPE = 256, TK_DEC, TK_HEX, TK_REG, TK_EQ, TK_NEQ, TK_AND,  
+  TK_NOTYPE = 256, TK_DEC, TK_HEX, TK_REG, TK_EQ, TK_NEQ, TK_AND, TK_DEREF 
 
   /* TODO: Add more token types */
 };
@@ -204,15 +204,18 @@ int priority(int x){
 	else if (tokens[x].type == TK_AND){
 		return 0;
 	}
-	else{
+	else if (tokens[x].type == TK_DEREF){
 		return 4;
+	}
+	else{
+		return 5;
 	}
 }
 
 //判断主运算符函数
 int find_mainop(int p, int q){
 	int mainop = -1;
-	int lowest_priority = 4;
+	int lowest_priority = 5;
 	int in_colon = 0; //运算符是否在括号李
 	for (int i = p; i <= q; i++){
 	if (tokens[i].type == '('){
@@ -282,7 +285,7 @@ uint32_t eval(int p, int q) {
     }
     int op = find_mainop(p, q); //主运算符的下标
     
-    if (priority(op) == 4){
+    if (priority(op) == 5){
 	    printf("Find the wrong operand: tokens[%d].str =  %s\n", op, tokens[op].str);
 	    return -1;
     }
@@ -308,6 +311,12 @@ word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
+  }
+
+  for (int i = 0; i < nr_token; i++){
+    if (tokens[i].type == '*' && (i == 0 || ((tokens[nr_token-1].type != ')' && tokens[nr_token-1].type != TK_DEC) && tokens[nr_token-1].type != TK_HEX && tokens[nr_token-1].type != TK_REG))){
+      tokens[i].type = TK_DEREF;
+    }
   }
 
   /* TODO: Insert codes to evaluate the expression. */
