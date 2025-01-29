@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ, TK_DEC, TK_HEX 
+  TK_NOTYPE = 256, TK_EQ, TK_DEC, TK_HEX, TK_REG 
 
   /* TODO: Add more token types */
 };
@@ -47,7 +47,7 @@ static struct rule {
   [7]={"\\)", ')'}, 
   [8]={"0[xX][0-9A-Fa-f]+", TK_HEX},
   [9]={"[0-9]+u?", TK_DEC},  //十进制数
-
+  [10]={"$[$0-9a-f]{2,3}", TK_REG},
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -121,6 +121,11 @@ static bool make_token(char *e) {
 		case TK_HEX:
 			   tokens[nr_token].type = rules[i].token_type;
 			   strncpy(tokens[nr_token].str, substr_start+2, substr_len-2); //0x不读入
+			   nr_token++;
+			   break;
+		case TK_REG:
+			   tokens[nr_token].type = rules[i].token_type;
+			   strncpy(tokens[nr_token].str, substr_start+1, substr_len-1); //开头$不读入
 			   nr_token++;
 			   break;
                 default:
@@ -231,14 +236,28 @@ uint32_t eval(int p, int q) {
      * For now this token should be a number.
      * Return the value of the number.
      */
-    uint32_t num;
+    uint32_t num = 0;
 
+    //最后剩的需要根据类型返回不同的值
     if (tokens[p].type == TK_HEX){
 	num = strtoul(tokens[p].str, NULL, 16);
     }
-    else {
+    else if (tokens[p].type == TK_DEC){
         num = strtoul(tokens[p].str, NULL, 10);
     }
+    else if (tokens[p].type == TK_REG){
+	bool success;
+        uint32_t tmp = isa_reg_str2val(tokens[p].str, &success);
+
+	if (success == true){
+	  num = tmp;
+	}
+	else{
+	  printf("Do not match the name of any reg\n");
+	  return -1;
+	}
+    }
+
      return num;
   }
   else if (check_parentheses(p, q) == true) {
