@@ -40,7 +40,7 @@ static struct rule {
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
   
-  [3]={"[0-9][0-9]*u?", TK_DEC},  //十进制数
+  [3]={"[0-9]+u?", TK_DEC},  //十进制数
   [4]={"\\-", '-'},      //减法
   [5]={"\\*", '*'},      //乘法
   [6]={"/", '/'},        //除法
@@ -110,8 +110,10 @@ static bool make_token(char *e) {
         	case TK_NOTYPE: break; //遇到空格，直接跳过
 		case TK_DEC:
 			   tokens[nr_token].type = rules[i].token_type;
-			   strncpy(tokens[nr_token].str, substr_start, substr_len-1); //最后一个u不读进去
-			   tokens[nr_token].str[substr_len-1] = 0;
+			   strncpy(tokens[nr_token].str, substr_start, substr_len); 
+			   if (tokens[nr_token].str[substr_len-1] == 'u'){ //如果使用字面量后缀
+				   tokens[nr_token].str[substr_len-1] = 0;
+			   }
 			   nr_token++;
 			   break;
                 default:
