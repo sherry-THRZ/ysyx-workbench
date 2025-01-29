@@ -20,6 +20,7 @@
  */
 #include <regex.h>
 #include <stdio.h>
+#include <../include/memory/paddr.h>
 
 enum {
   TK_NOTYPE = 256, TK_DEC, TK_HEX, TK_REG, TK_EQ, TK_NEQ, TK_AND, TK_DEREF 
@@ -290,8 +291,12 @@ uint32_t eval(int p, int q) {
 	    return -1;
     }
 
-    uint32_t val1 = eval(p, op - 1);
+//    uint32_t val1 = eval(p, op - 1);
+    uint32_t val1 = 0;
     uint32_t val2 = eval(op + 1, q);
+    if (tokens[op].type != TK_DEREF){
+	    val1 = eval(p, op - 1); //如果是解引用，左边表达式为空
+    }
 
     int op_type = tokens[op].type;
     switch (op_type) {
@@ -302,6 +307,7 @@ uint32_t eval(int p, int q) {
       case TK_EQ: return val1 == val2;
       case TK_NEQ: return val1 != val2;
       case TK_AND: return val1 && val2; 
+      case TK_DEREF: return paddr_read(val2, 4);
       default: assert(0);
     }
   }
