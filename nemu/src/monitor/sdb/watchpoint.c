@@ -63,8 +63,12 @@ void free_wp(int no){
 		printf("There's no matched watchpoint number: %d\n", no);
 		assert(0);
 	}
-	q->next = p->next; //在head链表中删除p指向的元素
-	
+	else if (q == NULL){
+		head = NULL;
+	}
+	else{
+		q->next = p->next; //在head链表中删除p指向的元素
+	}	
 	p->next = free_;
 	free_ = p;
 
