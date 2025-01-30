@@ -18,6 +18,19 @@
 
 #include <common.h>
 
+typedef struct watchpoint {
+  int NO;
+  struct watchpoint *next;
+
+  /* TODO: Add more members if necessary */
+  char expr[65536]; //输入的表达式
+  word_t old_value; //表达式算出的旧值
+} WP;
+
+
 word_t expr(char *e, bool *success);
+WP* new_wp();
+void free_wp(int);
+void wp_show();
 
 #endif

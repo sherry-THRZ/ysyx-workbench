@@ -72,6 +72,12 @@ static int cmd_info(char *args){
   if (*args == 'r'){
     isa_reg_display();
   }
+  else if (*args == 'w'){
+    wp_show();
+  }
+  else{
+    printf("Please input: info w or info r.\n");
+  }
 
   return 0;
 }
@@ -112,6 +118,40 @@ static int cmd_p(char *args){
   return 0;  
 }
 
+static int cmd_w(char *args){
+	if (!args){
+		printf("Correct form: w expr.\n");
+		return 0;
+	}
+
+	bool success;
+	word_t ret = expr(args, &success);
+	if (success == false){
+		printf("w expr: expression is invalid.\n");
+	}
+	else{
+		WP* wp = new_wp();
+		strncpy(wp->expr, args, 65536);
+		wp->old_value = ret;
+		printf("Set watchpoint %d: %s.\n", wp->NO, wp->expr);
+	}
+	return 0;
+}
+
+static int cmd_d(char *args){
+	if (!args){
+		printf("Correct form: d N.\n");
+		return 0;
+	}
+
+	char *num = strtok(NULL, " ");
+	int no = atoi(num);
+	free_wp(no);
+	printf("Watchpoint number %d has been deleted.\n", no);
+
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -119,15 +159,17 @@ static struct {
   const char *description;
   int (*handler) (char *);
 } cmd_table [] = {
-  { "help", "Display information about all supported commands", cmd_help },
-  { "c", "Continue the execution of the program", cmd_c },
-  { "q", "Exit NEMU", cmd_q },
+  [0]={ "help", "Display information about all supported commands", cmd_help },
+  [1]={ "c", "Continue the execution of the program", cmd_c },
+  [2]={ "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
   [3]={"si", "Single-step execution", cmd_si},
   [4]={"info", "Print out program state", cmd_info},
   [5]={"x", "scan memory", cmd_x},
-  [6]={"p", "calculate the value of the expression", cmd_p}
+  [6]={"p", "calculate the value of the expression", cmd_p},
+  [7]={"w", "set a watchpoint", cmd_w},
+  [8]={"d", "delete a watchpoint", cmd_d},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
