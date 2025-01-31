@@ -97,7 +97,7 @@ void check_watchpoint(){
 	for (; wp != NULL; wp = wp->next){
 		new_value = expr(wp->expr, &success);
 		if (wp->old_value != new_value){
-			printf("Watchpoint %d: %s\nold_value = %u\nnew_value = %u\n", wp->NO, wp->expr, wp->old_value, new_value);
+			printf("Value of watchpoint %d: %s has changed.\nold_value = %u\nnew_value = %u\n", wp->NO, wp->expr, wp->old_value, new_value);
 			wp->old_value = new_value;
 			nemu_state.state = NEMU_STOP;
 			return; //找到一个变化的就return
