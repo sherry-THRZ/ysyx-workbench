@@ -89,3 +89,20 @@ void wp_show(){
 }
 
 //检查监视点的值是否改变
+void check_watchpoint(){
+	WP* wp = head;
+	bool success = false;
+	word_t new_value;
+
+	for (; wp != NULL; wp = wp->next){
+		new_value = expr(wp->expr, &success);
+		if (wp->old_value != new_value){
+			printf("Watchpoint %d: %s\nold_value = %u\nnew_value = %u\n", wp->NO, wp->expr, wp->old_value, new_value);
+			wp->old_value = new_value;
+			nemu_state.state = NEMU_STOP;
+			return; //找到一个变化的就return
+		}
+	}
+
+	return;
+}

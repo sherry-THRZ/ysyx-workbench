@@ -32,5 +32,6 @@ word_t expr(char *e, bool *success);
 WP* new_wp();
 void free_wp(int);
 void wp_show();
+void check_watchpoint();
 
 #endif
