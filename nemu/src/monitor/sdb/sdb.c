@@ -92,11 +92,23 @@ static int cmd_x(char *args){
   char *num_tmp = strtok(args, " ");
  //剩下的args就是表达式
  
-  int num = atoi(num_tmp);
+  char *endptr;
+  int num = strtol(num_tmp, &endptr, 10);
+  if (*endptr != '\0'){
+    printf("Please input an integer. Correct form: x N expr.\n");
+    return 0;
+  }
   
   //expr暂时只能是十六进制数
   char *addr_tmp = num_tmp + strlen(num_tmp) + 1; 
-  paddr_t expr_to_addr = strtoul(addr_tmp, NULL, 16);
+
+  //args是表达式
+  bool success;
+  paddr_t expr_to_addr = expr(addr_tmp, &success);
+  if (success == false){
+    printf("Invalid expression. Correct form: x N expr.\n");
+    return 0;
+  }  
 
   for (int i = 0; i < num; i++){
     printf("%#x: %#x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
