@@ -29,7 +29,7 @@ static int regs_size = MUXDEF(CONFIG_RVE, 16, 32);
 void isa_reg_display() {
   printf("The regs values are:\n");
   for (int i = 0; i < regs_size; i = i + 2){
-    printf("%-3s = %-20d\t%#-16x\t\t%-3s = %-20d\t%#-16x\n", regs[i], cpu.gpr[i], cpu.gpr[i], regs[i+1], cpu.gpr[i+1], cpu.gpr[i+1]); 
+    printf("%-3s = %-20u\t%#-16x\t\t%-3s = %-20u\t%#-16x\n", regs[i], cpu.gpr[i], cpu.gpr[i], regs[i+1], cpu.gpr[i+1], cpu.gpr[i+1]); 
  } 
 }
 
