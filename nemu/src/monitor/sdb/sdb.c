@@ -112,7 +112,8 @@ static int cmd_x(char *args){
 
   for (int i = 0; i < num; i++){
     printf("%#x: %#x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
-    }
+    expr_to_addr += 4;
+  }
 
   return 0;
 }
