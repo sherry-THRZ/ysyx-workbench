@@ -57,7 +57,12 @@ static int cmd_si(char *args){
   //如果没有给出N，args为NULL,执行单步执行，否则根据给出的N来执行
   int step = 1;
   if (args){
-   step = atoi(args); 
+    char *endptr;
+    step = strtoul(args, &endptr, 10);
+    if (*endptr != '\0'){
+      printf("Please input an integer. Correct form: si N\n");
+      return 0;
+    }
   }
 
   //根据step来执行
@@ -275,7 +280,7 @@ void init_sdb() {
   init_regex();
 
   //测试表达式求值
-//  test_expr();
+  test_expr();
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
