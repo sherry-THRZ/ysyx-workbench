@@ -63,9 +63,9 @@ void free_wp(int no){
 		printf("There's no matched watchpoint number: %d\n", no);
 		assert(0);
 	}
-//	else if (q == NULL && p == head){ //匹配的是链表第一个元素
-//		head = p->next;  
-//	}
+	else if (q == NULL && p == head){ //匹配的是链表第一个元素
+		head = p->next;  
+	}
 	else{
 		q->next = p->next; //在head链表中删除p指向的元素
 	}	
