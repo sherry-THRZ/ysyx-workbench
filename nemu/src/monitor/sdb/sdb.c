@@ -57,7 +57,12 @@ static int cmd_si(char *args){
   //如果没有给出N，args为NULL,执行单步执行，否则根据给出的N来执行
   int step = 1;
   if (args){
-   step = atoi(args); 
+    char *endptr;
+    step = strtoul(args, &endptr, 10);
+    if (*endptr != '\0'){
+      printf("Please input an integer. Correct form: si N\n");
+      return 0;
+    }
   }
 
   //根据step来执行
@@ -72,6 +77,12 @@ static int cmd_info(char *args){
   if (*args == 'r'){
     isa_reg_display();
   }
+  else if (*args == 'w'){
+    wp_show();
+  }
+  else{
+    printf("Please input: info w or info r.\n");
+  }
 
   return 0;
 }
@@ -81,15 +92,28 @@ static int cmd_x(char *args){
   char *num_tmp = strtok(args, " ");
  //剩下的args就是表达式
  
-  int num = atoi(num_tmp);
+  char *endptr;
+  int num = strtol(num_tmp, &endptr, 10);
+  if (*endptr != '\0'){
+    printf("Please input an integer. Correct form: x N expr.\n");
+    return 0;
+  }
   
   //expr暂时只能是十六进制数
   char *addr_tmp = num_tmp + strlen(num_tmp) + 1; 
-  paddr_t expr_to_addr = strtoul(addr_tmp, NULL, 16);
+
+  //args是表达式
+  bool success;
+  paddr_t expr_to_addr = expr(addr_tmp, &success);
+  if (success == false){
+    printf("Invalid expression. Correct form: x N expr.\n");
+    return 0;
+  }  
 
   for (int i = 0; i < num; i++){
     printf("%#x: %#x\n", expr_to_addr, paddr_read(expr_to_addr, 4));
-    }
+    expr_to_addr += 4;
+  }
 
   return 0;
 }
@@ -99,17 +123,47 @@ static int cmd_p(char *args){
   uint32_t value = expr(args, &success);
 
   if (success == false){
-	  panic("Cannot not make token\n");
+	  printf("Cannot not make token\n");
+	  return 0;
   }
   else{
-	  if (value == -1){
-		  panic("Something went wrong in fuction cmd_p, please look at former information.\n"); //这个可以再改进
-	  }
-	  else{
-		  printf("The value of the expression is: %u\n", value);
-	  }
+          printf("The value of the expression is: %u(dec), 0x%x(hex)\n", value, value);
   }
   return 0;  
+}
+
+static int cmd_w(char *args){
+	if (!args){
+		printf("Correct form: w expr.\n");
+		return 0;
+	}
+
+	bool success;
+	word_t ret = expr(args, &success);
+	if (success == false){
+		printf("w expr: expression is invalid.\n");
+	}
+	else{
+		WP* wp = new_wp();
+		strncpy(wp->expr, args, 65536);
+		wp->old_value = ret;
+		printf("Set watchpoint %d: %s.\n", wp->NO, wp->expr);
+	}
+	return 0;
+}
+
+static int cmd_d(char *args){
+	if (!args){
+		printf("Correct form: d N.\n");
+		return 0;
+	}
+
+	char *num = strtok(NULL, " ");
+	int no = atoi(num);
+	free_wp(no);
+	printf("Watchpoint number %d has been deleted.\n", no);
+
+	return 0;
 }
 
 static int cmd_help(char *args);
@@ -119,15 +173,17 @@ static struct {
   const char *description;
   int (*handler) (char *);
 } cmd_table [] = {
-  { "help", "Display information about all supported commands", cmd_help },
-  { "c", "Continue the execution of the program", cmd_c },
-  { "q", "Exit NEMU", cmd_q },
+  [0]={ "help", "Display information about all supported commands", cmd_help },
+  [1]={ "c", "Continue the execution of the program", cmd_c },
+  [2]={ "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
   [3]={"si", "Single-step execution", cmd_si},
   [4]={"info", "Print out program state", cmd_info},
   [5]={"x", "scan memory", cmd_x},
-  [6]={"p", "calculate the value of the expression", cmd_p}
+  [6]={"p", "calculate the value of the expression", cmd_p},
+  [7]={"w", "set a watchpoint", cmd_w},
+  [8]={"d", "delete a watchpoint", cmd_d},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
