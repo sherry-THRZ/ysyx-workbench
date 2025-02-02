@@ -127,7 +127,7 @@ static int cmd_p(char *args){
 	  return 0;
   }
   else{
-          printf("The value of the expression is: %u\n", value);
+          printf("The value of the expression is: %u(dec), 0x%x\n", value, value);
   }
   return 0;  
 }
