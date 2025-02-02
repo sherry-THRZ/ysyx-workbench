@@ -239,9 +239,9 @@ int find_mainop(int p, int q){
 uint32_t eval(int p, int q) {
   if (p > q) {
     /* Bad expression */
-    printf("Bad Expression: p > q\n");
+    printf("Bad Expression: p > q, cannot calculate the value.\n");
     //这里如何处理需要修改！
-    return -1;
+    return 0;
   }
   else if (p == q) {
     /* Single token.
@@ -265,8 +265,8 @@ uint32_t eval(int p, int q) {
 	  num = tmp;
 	}
 	else{
-	  printf("Do not match the name of any reg\n");
-	  return -1;
+	  printf("Do not match the name of any reg, cannot calculate the value.\n");
+	  return 0;
 	}
     }
 
@@ -282,13 +282,13 @@ uint32_t eval(int p, int q) {
     //检查是否会出现不合法的表达式
     if (_check_parentheses(p, q) == false){
 	    printf("Bad expression, the expression is illegal, it has unmatched parentheses or the thing in the parenthesis is wrong!\n");
-	    return -1; //可能需要修改！
+	    return 0; //可能需要修改！
     }
     int op = find_mainop(p, q); //主运算符的下标
     
     if (priority(op) == 5){
 	    printf("Find the wrong operand: tokens[%d].str =  %s\n", op, tokens[op].str);
-	    return -1;
+	    return 0;
     }
 
 //    uint32_t val1 = eval(p, op - 1);

@@ -123,15 +123,11 @@ static int cmd_p(char *args){
   uint32_t value = expr(args, &success);
 
   if (success == false){
-	  panic("Cannot not make token\n");
+	  printf("Cannot not make token\n");
+	  return 0;
   }
   else{
-	  if (value == -1){
-		  panic("Something went wrong in fuction cmd_p, please look at former information.\n"); //这个可以再改进
-	  }
-	  else{
-		  printf("The value of the expression is: %u\n", value);
-	  }
+          printf("The value of the expression is: %u\n", value);
   }
   return 0;  
 }
