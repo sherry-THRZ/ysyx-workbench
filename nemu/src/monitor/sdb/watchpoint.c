@@ -81,9 +81,9 @@ void wp_show(){
     printf("There's no watchpoint.\n");
     return;
   }
-  printf("%-10s%-10s%-10s\n", "Num", "What", "Value");
+  printf("%-15s%-15s%-15s\n", "Num", "What", "Value");
   for (; wp; wp = wp->next){
-    printf("%-10d%-10s0x%-10x\n", wp->NO, wp->expr, wp->old_value);
+    printf("%-15d%-15s0x%-15x\n", wp->NO, wp->expr, wp->old_value);
   }
   return;
 }
