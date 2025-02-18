@@ -48,7 +48,7 @@ static struct rule {
   [7]={"\\)", ')'}, 
   [8]={"0[xX][0-9A-Fa-f]+", TK_HEX},
   [9]={"[0-9]+u?", TK_DEC},  //十进制数
-  [10]={"\\$(\\$0|ra|sp|gp|tp|t[0-6]|a[0-7]|s[0-9]+)", TK_REG},
+  [10]={"\\$(pc|\\$0|ra|sp|gp|tp|t[0-6]|a[0-7]|s[0-9]+)", TK_REG}, //pc也算是寄存器的一种
   [11]={"!=", TK_NEQ},
   [12]={"&&", TK_AND}
 };
@@ -259,7 +259,15 @@ uint32_t eval(int p, int q) {
     }
     else if (tokens[p].type == TK_REG){
 	bool success;
-        uint32_t tmp = isa_reg_str2val(tokens[p].str, &success);
+
+	uint32_t tmp = 0;
+	if (strcmp("pc", tokens[p].str) == 0){
+	  tmp = cpu.pc; 
+	  success = true;
+	}
+	else{
+          tmp = isa_reg_str2val(tokens[p].str, &success);
+	}
 
 	if (success == true){
 	  num = tmp;
